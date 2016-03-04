@@ -10,6 +10,7 @@ public class Ejecutable extends PApplet {
 		size(500, 500);
 	}
 	
+	//Pinta
 	public void draw(){
 		background(255);
 		logica.ejecutable();
