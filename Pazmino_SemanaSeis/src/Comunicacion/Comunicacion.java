@@ -58,7 +58,6 @@ public class Comunicacion extends Thread {
 		}
 	}
 
-	// Recibir
 	public void recibir() {
 		byte[] buzon = new byte[1024];
 		DatagramPacket pack = new DatagramPacket(buzon, buzon.length);
