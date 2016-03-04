@@ -39,7 +39,7 @@ public class Comunicacion extends Thread {
 		while (true) {
 			try {
 				recibir();
-				sleep(10);
+				sleep(100);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -50,7 +50,8 @@ public class Comunicacion extends Thread {
 	public void enviar(Mensaje msj) {
 		byte[] datos = objectByte(msj);
 		try {
-			DatagramPacket enviar = new DatagramPacket(datos, datos.length, InetAddress.getByName(id.split("/")[0]), puerto);
+			DatagramPacket enviar = new DatagramPacket(datos, datos.length, InetAddress.getByName(id.split("/")[0]),
+					puerto);
 			socket.send(enviar);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -65,39 +66,44 @@ public class Comunicacion extends Thread {
 			socket.receive(pack);
 			id = pack.getAddress().toString();
 			Mensaje msj = byteObjeto(pack.getData());
-			System.out.println("recibi");
-			
-			if (msj.getTipoIngreso().equals("Registro")) {
-				if (usuarios.size() <= 0) {
-					Mensaje mensaje = new Mensaje("existe", false);
-					enviar(mensaje);
-					usuarios.add(new Usuario(msj.getNombre(), msj.getContra()));
-				} else {
-					for (int i = 0; i <= usuarios.size(); i++) {
-						if (usuarios.get(i).getUsuario().equals(msj.getNombre())) {
-							Mensaje mensaje = new Mensaje("existe", true);
-							enviar(mensaje);
-							System.out.println("entro 1");
-						} else {
+			System.out.println("mensaje tipo: " + msj.getTipoIngreso());
+			if (msj != null) {
+				if (msj.getTipoIngreso() != null) {
+					if (msj.getTipoIngreso().equals("Registro")) {
+						System.out.println("entra 0");
+						if (usuarios.size() <= 0) {
 							Mensaje mensaje = new Mensaje("existe", false);
 							enviar(mensaje);
 							usuarios.add(new Usuario(msj.getNombre(), msj.getContra()));
-							System.out.println("entro 2");
+							System.out.println("entró");
+						} else {
+							for (int i = 0; i <= usuarios.size(); i++) {
+								if (usuarios.get(i).getUsuario().equals(msj.getNombre())) {
+									Mensaje mensaje = new Mensaje("existe", true);
+									enviar(mensaje);
+									System.out.println("entro 1");
+								} else {
+									Mensaje mensaje = new Mensaje("existe", false);
+									enviar(mensaje);
+									usuarios.add(new Usuario(msj.getNombre(), msj.getContra()));
+									System.out.println("entro 2");
+								}
+							}
 						}
 					}
+
+					if (msj.getTipoIngreso().equals("Ingreso")) {
+						Mensaje mensaje = new Mensaje("existe", true);
+						enviar(mensaje);
+					}
 				}
-			}
-			
-			if (msj.getTipoIngreso().equals("Ingreso")) {
-				Mensaje mensaje = new Mensaje("existe", true);
-				enviar(mensaje);
+				pack = null;
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
+
 	public byte[] objectByte(Mensaje param) {
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 		try {
