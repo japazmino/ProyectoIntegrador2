@@ -4,7 +4,7 @@ import Comunicacion.Comunicacion;
 import processing.core.PApplet;
 
 public class Logica {
-	// comentario cualquiera
+	
 	private PApplet app;
 	private Comunicacion com;
 	
